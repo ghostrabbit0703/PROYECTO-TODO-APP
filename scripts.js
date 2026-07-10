@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded',function(){
+    
     let listTasks=JSON.parse(localStorage.getItem("Tasks"))||[];
     let nameTask=document.getElementById("name-task");
     let descriptionTask=document.getElementById("description-task")
@@ -7,7 +8,7 @@ document.addEventListener('DOMContentLoaded',function(){
     
     function createTask(nameTask ,descriptionTask){
         const nameTaskValue = nameTask.value;
-        const descriptionTaskValue = nameTask.value;
+        const descriptionTaskValue = descriptionTask.value;
         
         if (!nameTaskValue.trim() || !descriptionTaskValue.trim()) {
             alert('Todos los campos son obligatorios');
@@ -49,7 +50,6 @@ document.addEventListener('DOMContentLoaded',function(){
             buttonView.id="button-view-task";
             buttonEdit.id="button-edit-task";
             buttonDelete.id="button-delete-task";
-
 
             nameTaskElement.textContent=`${item.name}`;
             descriptionTaskElement.textContent=`${item.description}`;

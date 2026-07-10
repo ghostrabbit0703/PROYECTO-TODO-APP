@@ -18,7 +18,6 @@ body{
     justify-content: center;
     width: 100%;
     max-width: 500px;
-    
 }
 .space-create-task {
     display: flex;
@@ -60,9 +59,6 @@ body{
    
 }
 .space-crud-task {
-    /* display:grid;
-    grid-template-columns: repeat(3,1fr);
-    gap:5px; */
     width: 100%;       
     max-width: 500px;   
     min-height: 200px;
@@ -76,4 +72,49 @@ body{
     display:grid;
     grid-template-columns: repeat(3,1fr);
     gap:5px; 
+}
+
+.action-task-list{
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+}
+
+#button-view-task{
+    background-color: rgb(72, 72, 239);
+    width: 75px;
+    color:white;
+    border: none;
+}
+
+#button-edit-task{
+    background-color: rgb(255, 255, 98);
+    width: 75px;
+    height: 25px;
+    color: black;
+    border: none;
+}
+
+#button-delete-task{
+    
+    background-color: rgb(211, 46, 46);
+    width: 75px;
+    color:white;
+    border: none;
+}
+
+#button-view-task:hover{
+    background-color: rgb(3, 3, 244);
+    cursor: pointer;
+}
+#button-edit-task:hover{
+    background-color: rgb(255, 255, 1);
+    cursor: pointer;
+
+}
+
+#button-delete-task:hover{
+    background-color: rgb(255, 15, 15);
+    cursor: pointer;
+
 }
