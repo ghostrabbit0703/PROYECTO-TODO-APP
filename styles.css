@@ -29,14 +29,25 @@ body{
     border:2px solid rgb(171, 171, 171);  
     border-radius: 8px;      
 }
+
 .name-task,
-.destription-task,
+.description-task,
 .button-create-task {
     width: 100%;            
     padding: 10px;          
     border: 2px solid #ccc; 
     border-radius: 8px;     
     font-size: 1rem;       
+}
+
+.description-task {
+    min-height: 100px;      
+    resize: none;           
+    width: 100%;            
+    max-width: 100%;        
+    max-height: 100%;      
+    box-sizing: border-box; 
+    overflow-y: auto;       
 }
 .crud-title {
     width: 100%;       
@@ -68,26 +79,59 @@ body{
     border-radius: 8px;
 }
 
-.row-list-task{
-    display:grid;
-    grid-template-columns: repeat(3,1fr);
-    gap:5px; 
+.row-list-task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    width: 100%;
+}
+
+.content-task {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.checkbox-list-task {
+    width: 18px;
+    height: 18px;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.text-task {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+.name-task-list,
+.description-task-list {
+    margin: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;    
+    /* text-decoration: line-through; */
 }
 
 .action-task-list{
     display: flex;
+    flex-shrink: 0;
     gap: 6px;
     padding: 5px;
 }
 
-#button-view-task{
+.button-view-task{
     background-color: rgb(72, 72, 239);
     width: 75px;
     color:white;
     border: none;
 }
 
-#button-edit-task{
+.button-edit-task{
     background-color: rgb(255, 255, 98);
     width: 75px;
     height: 25px;
@@ -95,7 +139,7 @@ body{
     border: none;
 }
 
-#button-delete-task{
+.button-delete-task{
     
     background-color: rgb(211, 46, 46);
     width: 75px;
@@ -103,17 +147,17 @@ body{
     border: none;
 }
 
-#button-view-task:hover{
+.button-view-task:hover{
     background-color: rgb(3, 3, 244);
     cursor: pointer;
 }
-#button-edit-task:hover{
+.button-edit-task:hover{
     background-color: rgb(255, 255, 1);
     cursor: pointer;
 
 }
 
-#button-delete-task:hover{
+.button-delete-task:hover{
     background-color: rgb(255, 15, 15);
     cursor: pointer;
 
