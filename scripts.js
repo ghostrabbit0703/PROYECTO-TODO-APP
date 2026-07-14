@@ -6,118 +6,132 @@ document.addEventListener('DOMContentLoaded',function(){
     let buttonCreateTask=document.getElementById("button-create-task");
     let incrementId=1;
     const areaListTask=document.querySelector(".space-crud-task");
-        areaListTask.innerHTML="";
-        
+    let editingTaskId = null;
+    areaListTask.innerHTML="";  
 
+    function saveTask() {
+        const nameTaskValue = nameTask.value.trim();
+        const descriptionTaskValue = descriptionTask.value.trim();
 
-    
-    function createTask(nameTask ,descriptionTask){
-        const nameTaskValue = nameTask.value;
-        const descriptionTaskValue = descriptionTask.value;
-        
-        if (!nameTaskValue.trim() || !descriptionTaskValue.trim()) {
-            alert('Todos los campos son obligatorios');
+        if (!nameTaskValue || !descriptionTaskValue) {
+            alert("Todos los campos son obligatorios");
             return;
         }
-        const task={
-            id:incrementId,
-            name: nameTaskValue,          
-            description: descriptionTaskValue,
-            checked: false
-        };
-        listTasks.push(task)
+
+        if (editingTaskId === null) {
+            const task = {
+                id: incrementId,
+                name: nameTaskValue,
+                description: descriptionTaskValue,
+                checked: false
+            };
+
+            listTasks.push(task);
+            incrementId++;
+
+            alert("La tarea fue creada correctamente");
+        } else {
+            const taskFound = listTasks.find(
+                task => task.id === editingTaskId
+            );
+
+            if (!taskFound) {
+                alert("No se encontró la tarea");
+                return;
+            }
+
+            taskFound.name = nameTaskValue;
+            taskFound.description = descriptionTaskValue;
+
+            editingTaskId = null;
+            buttonCreateTask.textContent = "Agregar tarea";
+
+            alert("La tarea fue actualizada correctamente");
+        }
 
         localStorage.setItem("Tasks", JSON.stringify(listTasks));
-        nameTask.value = '';
-        descriptionTask.value = '';
-        incrementId++;
-        alert("su registro fue exitoso");
+
+        nameTask.value = "";
+        descriptionTask.value = "";
+
         renderListTask();
-        location.reload();
-        
+    }
+    function renderListTask() {
+    areaListTask.innerHTML = listTasks.map(item => `
+        <div class="row-list-task">
+            <div class="content-task">
+                <input
+                    type="checkbox"
+                    class="checkbox-list-task"
+                    data-task-id="${item.id}"
+                    ${item.checked ? "checked" : ""}
+                >
+
+                <div class="text-task">
+                    <h3 class="name-task-list ${item.checked ? "completed-task" : ""}">
+                        ${item.name}
+                    </h3>
+
+                    <p class="description-task-list ${item.checked ? "completed-task" : ""}">
+                        ${item.description}
+                    </p>
+                </div>
+            </div>
+
+            <div class="action-task-list">
+                <button class="button-view-task" data-task-id="${item.id}">
+                    Ver
+                </button>
+
+                <button class="button-edit-task" data-task-id="${item.id}">
+                    Editar
+                </button>
+
+                <button class="button-delete-task" data-task-id="${item.id}">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+
+        <hr>
+    `).join("");
+}
+areaListTask.addEventListener("click", event => {
+    const button = event.target.closest("button");
+
+    if (!button) {
+        return;
     }
 
-    function renderListTask(){
-        
-        listTasks.forEach(item=>{
-            const rowListTask=document.createElement("div");
-            const contentTaskElement=document.createElement("div");
-            const checkBoxTaskElement=document.createElement("input");
-            const textTaskElement = document.createElement("div");
-            const nameTaskElement=document.createElement("h3");
-            const descriptionTaskElement=document.createElement("p");
-            const actionTaskElement=document.createElement("div");
-            const buttonView=document.createElement("button");
-            const buttonEdit=document.createElement("button");
-            const buttonDelete=document.createElement("button");
+    const id = Number(button.dataset.taskId);
 
+    if (button.classList.contains("button-view-task")) {
+        viewTask(id);
+    } else if (button.classList.contains("button-edit-task")) {
+        editTask(id);
+    } else if (button.classList.contains("button-delete-task")) {
+        deleteTask(id);
+    }
+});
 
-            checkBoxTaskElement.type = "checkbox";
-
-            rowListTask.classList.add("row-list-task");
-            checkBoxTaskElement.classList.add("checkbox-list-task");
-            contentTaskElement.classList.add("content-task");
-            textTaskElement.classList.add("text-task");
-            nameTaskElement.classList.add("name-task-list");
-            descriptionTaskElement.classList.add("description-task-list");
-            actionTaskElement.classList.add("action-task-list");
-
-            buttonView.classList.add("button-view-task");
-            buttonEdit.classList.add("button-edit-task");
-            buttonDelete.classList.add("button-delete-task"); 
-
-            buttonView.dataset.taskId=item.id;
-            buttonEdit.dataset.taskId = item.id;
-            buttonDelete.dataset.taskId = item.id;
-
-            nameTaskElement.textContent=`${item.name}`;
-            descriptionTaskElement.textContent=`${item.description}`;
-            buttonView.textContent="Ver";
-            buttonEdit.textContent="Editar";
-            buttonDelete.textContent="Eliminar";
-
-            checkBoxTaskElement.addEventListener("change", () => {
-
-                if (checkBoxTaskElement.checked) {
-                    nameTaskElement.style.textDecoration = "line-through";
-                    descriptionTaskElement.style.textDecoration ="line-through";
-                } else {
-                    nameTaskElement.style.textDecoration = "none";
-                    descriptionTaskElement.style.textDecoration ="none";               
-                }
-
-            });
-
-            buttonView.addEventListener("click", () => {
-                viewTask(item.id);
-            });
-
-            buttonEdit.addEventListener("click", () => {
-                editTask(item.id);
-            });
-
-            buttonDelete.addEventListener("click", () => {
-                deleteTask(item.id);
-            });
-
-            textTaskElement.appendChild(nameTaskElement);
-            textTaskElement.appendChild(descriptionTaskElement);
-
-            contentTaskElement.appendChild(checkBoxTaskElement);
-            contentTaskElement.appendChild(textTaskElement);
-
-            actionTaskElement.appendChild(buttonView);
-            actionTaskElement.appendChild(buttonEdit);
-            actionTaskElement.appendChild(buttonDelete);
-
-            rowListTask.appendChild(contentTaskElement);
-            rowListTask.appendChild(actionTaskElement);
-
-            areaListTask.appendChild(rowListTask);
-            areaListTask.appendChild(document.createElement("hr"))
-        })
+areaListTask.addEventListener("change", event => {
+    if (!event.target.classList.contains("checkbox-list-task")) {
+        return;
     }
 
+    const id = Number(event.target.dataset.taskId);
+    const taskFound = listTasks.find(task => task.id === id);
+
+    if (!taskFound) {
+        return;
+    }
+
+    taskFound.checked = event.target.checked;
+
+    localStorage.setItem("Tasks", JSON.stringify(listTasks));
+
+    renderListTask();
+});
 
     function viewTask(id) {
         const taskFound = listTasks.find(task => task.id === id);
@@ -131,34 +145,22 @@ document.addEventListener('DOMContentLoaded',function(){
         );
     }
 
-    function editTask(id){
+    function editTask(id) {
         const taskFound = listTasks.find(task => task.id === id);
+
         if (!taskFound) {
             alert("No se encontró la tarea");
             return;
         }
-        
-        let newNameTask=prompt(`ingresa el nuevo valor para la tarea: ${taskFound.name}`);
-        let newDescriptionTask=prompt(`ingresa el nuevo valor para la descripcion: ${taskFound.description}`);
 
-        if (newNameTask === null || newDescriptionTask === null) {
-            return;
-        }
+        nameTask.value = taskFound.name;
+        descriptionTask.value = taskFound.description;
 
-        if (!newNameTask.trim() || !newDescriptionTask.trim()) {
-            alert("Los campos no pueden estar vacíos");
-            return;
-        }
+        editingTaskId = id;
 
-        taskFound.name = newNameTask.trim();
-        taskFound.description = newDescriptionTask.trim();
-        localStorage.setItem("Tasks", JSON.stringify(listTasks));
+        buttonCreateTask.textContent = "Guardar cambios";
 
-        renderListTask();
-        location.reload();
-
-        //alert("se actualizo la tarea");
-        
+        nameTask.focus();
     }
 
 
@@ -184,9 +186,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
     
   
-    buttonCreateTask.addEventListener('click',()=>{
-        createTask( nameTask,descriptionTask);
-    })
+    buttonCreateTask.addEventListener("click", saveTask);
 
 
     if (listTasks.length > 0) {

@@ -162,3 +162,6 @@ body{
     cursor: pointer;
 
 }
+.completed-task {
+    text-decoration: line-through;
+}
